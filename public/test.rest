@@ -1,0 +1,6 @@
+POST http://localhost/API_project/public/api/create/product
+
+{
+    "name": "nokia"
+}
+
