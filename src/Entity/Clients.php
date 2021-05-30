@@ -30,7 +30,7 @@ class Clients
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity=Subscribers::class, mappedBy="client_number", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Subscribers::class, mappedBy="client", orphanRemoval=true)
      */
     private $subscribers;
 
