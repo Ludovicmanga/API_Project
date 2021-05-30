@@ -12,7 +12,7 @@ Class ProductsService implements ProductsServiceInterface
     
     public function __construct(
         ProductsRepository $repository,
-        EntityManagerInterface $em 
+        EntityManagerInterface $em
     )
     {
         $this->repository = $repository;
@@ -30,6 +30,7 @@ Class ProductsService implements ProductsServiceInterface
         $data = json_decode($request->getContent());
         $product = New Products;
         $product->setName($data->name);
+        $this->em->persist($product);
         $this->em->flush();
 
         return new Response('Ok', 201);
