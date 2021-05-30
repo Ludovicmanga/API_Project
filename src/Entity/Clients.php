@@ -30,12 +30,12 @@ class Clients
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity=Subscribers::class, mappedBy="client_number", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Subscribers::class, mappedBy="client", orphanRemoval=true)
      */
     private $subscribers;
 
     /**
-     * @ORM\ManyToMany(targetEntity=products::class, inversedBy="clients")
+     * @ORM\ManyToMany(targetEntity=Products::class, inversedBy="clients")
      */
     private $products;
 
@@ -105,14 +105,14 @@ class Clients
     }
 
     /**
-     * @return Collection|products[]
+     * @return Collection|Products[]
      */
     public function getProducts(): Collection
     {
         return $this->products;
     }
 
-    public function addProduct(products $product): self
+    public function addProduct(Products $product): self
     {
         if (!$this->products->contains($product)) {
             $this->products[] = $product;
@@ -121,7 +121,7 @@ class Clients
         return $this;
     }
 
-    public function removeProduct(products $product): self
+    public function removeProduct(Products $product): self
     {
         $this->products->removeElement($product);
 

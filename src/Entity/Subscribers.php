@@ -36,7 +36,7 @@ class Subscribers
      * @ORM\ManyToOne(targetEntity=clients::class, inversedBy="subscribers")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $client_number;
+    private $client;
 
     public function getId(): ?int
     {
@@ -79,14 +79,14 @@ class Subscribers
         return $this;
     }
 
-    public function getClientNumber(): ?clients
+    public function getClient(): ?clients
     {
-        return $this->client_number;
+        return $this->client;
     }
 
-    public function setClientNumber(?clients $client_number): self
+    public function setClient(?clients $client): self
     {
-        $this->client_number = $client_number;
+        $this->client = $client;
 
         return $this;
     }
