@@ -39,6 +39,11 @@ class Clients
      */
     private $products;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $Name;
+
     public function __construct()
     {
         $this->subscribers = new ArrayCollection();
@@ -124,6 +129,18 @@ class Clients
     public function removeProduct(Products $product): self
     {
         $this->products->removeElement($product);
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->Name;
+    }
+
+    public function setName(string $Name): self
+    {
+        $this->Name = $Name;
 
         return $this;
     }
