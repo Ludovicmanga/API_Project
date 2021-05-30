@@ -14,10 +14,10 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
- *@Route("/api", 
- *    name="api_")
+ *@Route("/product", 
+ *    name="product_")
 */
-class ApiController extends AbstractController
+class ProductController extends AbstractController
 {
     private $productsService;
 
@@ -31,7 +31,7 @@ class ApiController extends AbstractController
      *    name="product_create",
      *    methods={"POST"})
      */
-    public function addProduct(Request $request, EntityManagerInterface $em)
+    public function add(Request $request, EntityManagerInterface $em)
     {
         //if($request->isXmlHttpRequest()){
             $this->productsService->createProduct($request); 
@@ -88,4 +88,5 @@ class ApiController extends AbstractController
 
         return $response;
     }
+
 }

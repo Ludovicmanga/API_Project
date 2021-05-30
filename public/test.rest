@@ -1,6 +1,2 @@
-POST http://localhost/API_project/public/api/create/product
-
-{
-    "name": "nokia"
-}
+DELETE http://localhost/API_project/public/subscriber/remove/1
 

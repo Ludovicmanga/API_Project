@@ -17,7 +17,6 @@ Class ProductsService implements ProductsServiceInterface
     {
         $this->repository = $repository;
         $this->em = $em;
-
     }
 
     public function findAll()
