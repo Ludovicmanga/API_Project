@@ -21,6 +21,7 @@ Class SubscribersService implements SubscribersServiceInterface
     {
         $this->em->remove($subscriber);
         $this->em->flush();
+        
         return new Response('ok');
     }
 }

@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\ClientsRepository;
+use App\Repository\UsersRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=ClientRepository::class)
+ * @ORM\Entity(repositoryClass=UsersRepository::class)
  */
-class Clients
+class Users
 {
     /**
      * @ORM\Id
@@ -30,12 +30,12 @@ class Clients
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity=Subscribers::class, mappedBy="client", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Subscribers::class, mappedBy="user", orphanRemoval=true)
      */
     private $subscribers;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Products::class, inversedBy="clients")
+     * @ORM\ManyToMany(targetEntity=Products::class, inversedBy="users")
      */
     private $products;
 
@@ -91,7 +91,7 @@ class Clients
     {
         if (!$this->subscribers->contains($subscriber)) {
             $this->subscribers[] = $subscriber;
-            $subscriber->setClientNumber($this);
+            $subscriber->setUser($this);
         }
 
         return $this;
@@ -101,8 +101,8 @@ class Clients
     {
         if ($this->subscribers->removeElement($subscriber)) {
             // set the owning side to null (unless already changed)
-            if ($subscriber->getClientNumber() === $this) {
-                $subscriber->setClientNumber(null);
+            if ($subscriber->getUser() === $this) {
+                $subscriber->setUser(null);
             }
         }
 
