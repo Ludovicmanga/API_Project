@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 use Faker\Factory;
-use App\Entity\Clients;
+use App\Entity\Users;
 use App\Entity\Products;
 use App\Entity\Subscribers;
 use Doctrine\Persistence\ObjectManager;
@@ -29,39 +29,39 @@ class AppFixtures extends Fixture
             $manager->persist($product);
         }
 
-        // creation of 10 clients, each of them with 5 subscribers
+        // creation of 10 users, each of them with 5 subscribers
         for ($i = 0; $i < 10; $i++) {
-            $client = new Clients();
-            $client->setName($faker->company());
-            $client->setEmail($faker->email());
-            $client->setPassword('123456');
+            $user = new Users();
+            $user->setName($faker->company());
+            $user->setEmail($faker->email());
+            $user->setPassword('123456');
 
             $subscriber1 = new Subscribers(); 
-            $subscriber1->setClient($client); 
+            $subscriber1->setUser($user); 
             $subscriber1->setName($faker->name()); 
             $subscriber1->setLastName($faker->lastName());
             $subscriber1->setEmail($faker->email());
 
             $subscriber2 = new Subscribers(); 
-            $subscriber2->setClient($client); 
+            $subscriber2->setUser($user); 
             $subscriber2->setName($faker->name()); 
             $subscriber2->setLastName($faker->lastName());
             $subscriber2->setEmail($faker->email());
 
             $subscriber3 = new Subscribers(); 
-            $subscriber3->setClient($client); 
+            $subscriber3->setUser($user); 
             $subscriber3->setName($faker->name()); 
             $subscriber3->setLastName($faker->lastName());
             $subscriber3->setEmail($faker->email());
 
             $subscriber4 = new Subscribers(); 
-            $subscriber4->setClient($client); 
+            $subscriber4->setUser($user); 
             $subscriber4->setName($faker->name()); 
             $subscriber4->setLastName($faker->lastName());
             $subscriber4->setEmail($faker->email());
 
             $subscriber5 = new Subscribers(); 
-            $subscriber5->setClient($client); 
+            $subscriber5->setUser($user); 
             $subscriber5->setName($faker->name()); 
             $subscriber5->setLastName($faker->lastName());
             $subscriber5->setEmail($faker->email());
@@ -71,7 +71,7 @@ class AppFixtures extends Fixture
             $manager->persist($subscriber3);
             $manager->persist($subscriber4);
             $manager->persist($subscriber5);
-            $manager->persist($client);
+            $manager->persist($user);
         }
 
         $manager->flush();

@@ -2,15 +2,20 @@
 
 namespace App\Entity;
 
-use App\Repository\ClientsRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UsersRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * @ORM\Entity(repositoryClass=ClientRepository::class)
+ * @ORM\Entity(repositoryClass=UsersRepository::class)
+ * @UniqueEntity(
+ *     fields= {"email"}, 
+ *     message= "L'email que vous avez indiqué est déjà utilisé !")
  */
-class Clients
+class Users implements UserInterface
 {
     /**
      * @ORM\Id
@@ -21,6 +26,7 @@ class Clients
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Eamail()
      */
     private $email;
 
@@ -30,19 +36,19 @@ class Clients
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity=Subscribers::class, mappedBy="client", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Subscribers::class, mappedBy="user", orphanRemoval=true)
      */
     private $subscribers;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Products::class, inversedBy="clients")
+     * @ORM\ManyToMany(targetEntity=Products::class, inversedBy="users")
      */
     private $products;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Name;
+    private $userName;
 
     public function __construct()
     {
@@ -91,7 +97,7 @@ class Clients
     {
         if (!$this->subscribers->contains($subscriber)) {
             $this->subscribers[] = $subscriber;
-            $subscriber->setClientNumber($this);
+            $subscriber->setUser($this);
         }
 
         return $this;
@@ -101,8 +107,8 @@ class Clients
     {
         if ($this->subscribers->removeElement($subscriber)) {
             // set the owning side to null (unless already changed)
-            if ($subscriber->getClientNumber() === $this) {
-                $subscriber->setClientNumber(null);
+            if ($subscriber->getUser() === $this) {
+                $subscriber->setUser(null);
             }
         }
 
@@ -133,15 +139,24 @@ class Clients
         return $this;
     }
 
-    public function getName(): ?string
+    public function getUserName(): ?string
     {
-        return $this->Name;
+        return $this->userName;
     }
 
-    public function setName(string $Name): self
+    public function setUserName(string $userName): self
     {
-        $this->Name = $Name;
+        $this->userName = $userName;
 
         return $this;
+    }
+
+    public function eraseCredentials() {}
+
+    public function getSalt() {}
+
+    public function getRoles() 
+    {
+        return ['ROLE_USER'];
     }
 }

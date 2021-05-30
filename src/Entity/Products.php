@@ -25,13 +25,13 @@ class Products
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Clients::class, mappedBy="products")
+     * @ORM\ManyToMany(targetEntity=Users::class, mappedBy="products")
      */
-    private $clients;
+    private $users;
 
     public function __construct()
     {
-        $this->clients = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -52,27 +52,27 @@ class Products
     }
 
     /**
-     * @return Collection|Clients[]
+     * @return Collection|Users[]
      */
-    public function getClients(): Collection
+    public function getUsers(): Collection
     {
-        return $this->clients;
+        return $this->users;
     }
 
-    public function addClient(Clients $client): self
+    public function addUser(Users $user): self
     {
-        if (!$this->clients->contains($client)) {
-            $this->clients[] = $client;
-            $client->addProduct($this);
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->addProduct($this);
         }
 
         return $this;
     }
 
-    public function removeClient(Clients $client): self
+    public function removeUser(Users $user): self
     {
-        if ($this->clients->removeElement($client)) {
-            $client->removeProduct($this);
+        if ($this->users->removeElement($user)) {
+            $user->removeProduct($this);
         }
 
         return $this;
