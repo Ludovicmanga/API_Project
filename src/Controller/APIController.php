@@ -19,11 +19,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 */
 class ApiController extends AbstractController
 {
-    private $productService;
+    private $productsService;
 
-    public function __construct(ProductsServiceInterface $productService)
+    public function __construct(ProductsServiceInterface $productsService)
     {
-        $this->productService = $productService;
+        $this->productsService = $productsService;
     }
 
     /**
@@ -34,13 +34,7 @@ class ApiController extends AbstractController
     public function addProduct(Request $request, EntityManagerInterface $em)
     {
         //if($request->isXmlHttpRequest()){
-            $data = json_decode($request->getContent());
-            $product = New Products;
-            $product->setName($data->name);
-            $em->persist($product);
-            $em->flush();
-
-            return new Response('Ok', 201);
+            $this->productsService->createProduct($request); 
         //}
         //return new Response('Erreur', 404);
     }
