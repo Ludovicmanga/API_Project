@@ -24,4 +24,9 @@ Class SubscribersService implements SubscribersServiceInterface
         
         return new Response('ok');
     }
+
+    public function findByUser($userId)
+    {
+       return $this->repository->findByUser($userId); 
+    }
 }

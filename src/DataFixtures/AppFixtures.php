@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 use Faker\Factory;
-use App\Entity\Users;
+use App\Entity\User;
 use App\Entity\Products;
 use App\Entity\Subscribers;
 use Doctrine\Persistence\ObjectManager;
@@ -31,8 +31,7 @@ class AppFixtures extends Fixture
 
         // creation of 10 users, each of them with 5 subscribers
         for ($i = 0; $i < 10; $i++) {
-            $user = new Users();
-            $user->setName($faker->company());
+            $user = new User();
             $user->setEmail($faker->email());
             $user->setPassword('123456');
 

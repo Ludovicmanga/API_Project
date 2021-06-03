@@ -33,7 +33,7 @@ class Subscribers
     private $email;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="subscribers")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="Subscribers")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
@@ -79,15 +79,16 @@ class Subscribers
         return $this;
     }
 
-    public function getUser(): ?Users
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?Users $user): self
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
+
 }
