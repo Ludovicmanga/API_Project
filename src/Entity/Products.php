@@ -24,11 +24,6 @@ class Products
      */
     private $name;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Users::class, mappedBy="products")
-     */
-    private $users;
-
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -47,33 +42,6 @@ class Products
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Users[]
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
-
-    public function addUser(Users $user): self
-    {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-            $user->addProduct($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(Users $user): self
-    {
-        if ($this->users->removeElement($user)) {
-            $user->removeProduct($this);
-        }
 
         return $this;
     }

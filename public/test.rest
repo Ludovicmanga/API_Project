@@ -1,2 +1,2 @@
-DELETE http://localhost/API_project/public/subscriber/remove/1
+POST http://localhost/API_project/public/auth/localhost/API_project/public/api/login_check/register?email=ludo@example.com&password=123123
 

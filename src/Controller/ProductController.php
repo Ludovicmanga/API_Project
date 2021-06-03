@@ -27,7 +27,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     *@Route("/create/product", 
+     *@Route("/create", 
      *    name="product_create",
      *    methods={"POST"})
      */
@@ -40,13 +40,13 @@ class ProductController extends AbstractController
     }
 
     /**
-     *@Route("/products/list", 
+     *@Route("/list", 
      *    name="product_list", 
      *    methods={"GET"})
      */
     public function getList()
     {
-        $products = $this->productService->findAll();
+        $products = $this->productsService->findAll();
 
         $encoders = [new JsonEncoder()];
         $normalizers = [new ObjectNormalizer()];
@@ -67,7 +67,7 @@ class ProductController extends AbstractController
     /**
      * Allows to get a particular product
      * 
-     *@Route("/product/{id}", 
+     *@Route("/{id}", 
      *    name="product", 
      *    methods={"GET"})
      */
