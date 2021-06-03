@@ -26,7 +26,7 @@ class SubscriberController extends AbstractController
     }
 
     /**
-     *@Route("/get/{user_id}", 
+     *@Route("/get/user/{user_id}", 
      *    name="getUserSubscribers",
      *    methods={"GET"})
      */
@@ -35,20 +35,17 @@ class SubscriberController extends AbstractController
         $userId = $request->get('user_id');
         $subscribers = $this->subscribersService->findByUser($userId);
 
-        $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent = $serializer->serialize($subscribers, 'json', [
-            'circular_reference_handler' => function($object){
-                return $object->getId();
-            }
-        ]);
-        
-        $response = New Response($jsonContent);
+        return $this->subscribersService->serialize($subscribers); 
+    }
 
-        $response->headers->set('Content-type', 'application/json');
-
-        return $response;
+    /**
+     *@Route("/get/{id}", 
+     *    name="getSubscriber",
+     *    methods={"GET"})
+     */
+    public function getSubscriber(Subscribers $subscriber)
+    {
+        return $this->subscribersService->serialize($subscriber); 
     }
 
     /**

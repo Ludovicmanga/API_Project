@@ -7,4 +7,6 @@ Interface SubscribersServiceInterface
     public function findByUser($userId); 
 
     public function remove($subscriber);
+
+    public function serialize($subscribers);
 }
