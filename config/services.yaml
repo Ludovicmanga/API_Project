@@ -33,3 +33,4 @@ services:
 
     App\Services\ProductsServiceInterface: '@App\Services\ProductsService'
     App\Services\SubscribersServiceInterface: '@App\Services\SubscribersService'
+    App\Services\UserServiceInterface: '@App\Services\UserService'

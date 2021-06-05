@@ -31,10 +31,10 @@ class ProductController extends AbstractController
      *    name="product_create",
      *    methods={"POST"})
      */
-    public function add(Request $request, EntityManagerInterface $em)
+    public function add(Request $request)
     {
         //if($request->isXmlHttpRequest()){
-            $this->productsService->createProduct($request); 
+            return $this->productsService->createProduct($request);
         //}
         //return new Response('Erreur', 404);
     }
