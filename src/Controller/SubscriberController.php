@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Subscribers;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Serializer;
 use App\Services\SubscribersServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +28,7 @@ class SubscriberController extends AbstractController
 
     /**
      *@Route("/get/user/{user_id}", 
-     *    name="getUserSubscribers",
+     *    name="users_get",
      *    methods={"GET"})
      */
     public function getUserSubscribers(Request $request)
@@ -40,7 +41,7 @@ class SubscriberController extends AbstractController
 
     /**
      *@Route("/get/{id}", 
-     *    name="getSubscriber",
+     *    name="get",
      *    methods={"GET"})
      */
     public function getSubscriber(Subscribers $subscriber)
@@ -56,5 +57,18 @@ class SubscriberController extends AbstractController
     public function remove(Subscribers $subscriber)
     {
         $this->subscribersService->remove($subscriber);
+    }
+
+    /**
+     *@Route("/create", 
+     *    name="create",
+     *    methods={"POST"})
+     */
+    public function add(Request $request)
+    {
+        //if($request->isXmlHttpRequest()){
+            return $this->subscribersService->createSubscriber($request); 
+        //}
+        //return new Response('Erreur', 404);
     }
 }

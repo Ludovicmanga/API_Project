@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Entity\Products;
+use App\Entity\Subscribers;
+use App\Repository\UserRepository;
+use App\Services\UserServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\SubscribersRepository; 
 use Symfony\Component\Serializer\Serializer;
@@ -14,11 +17,15 @@ Class SubscribersService implements SubscribersServiceInterface
 {
     public function __construct(
         SubscribersRepository $repository,
-        EntityManagerInterface $em
+        UserRepository $userRepository,
+        EntityManagerInterface $em,
+        UserServiceInterface $userService
     )
     {
         $this->repository = $repository;
+        $this->userRepository = $userRepository;
         $this->em = $em;
+        $this->userService = $userService; 
     }
 
     public function remove($subscriber)
@@ -46,9 +53,26 @@ Class SubscribersService implements SubscribersServiceInterface
         ]);
         
         $response = New Response($jsonContent);
-
         $response->headers->set('Content-type', 'application/json');
-
         return $response;
+    }
+
+    public function createSubscriber($request)
+    {
+        $data = json_decode($request->getContent());
+        $subscriber = New Subscribers;
+        $subscriber->setName($data->name);
+        $subscriber->setLastName($data->lastName);
+        $subscriber->setEmail($data->email);
+
+        $userId = $data->userId;
+        $userIdInt = intval($userId);
+        $user = $this->userRepository->find($userIdInt);
+        $subscriber->setUser($user);
+
+        $this->em->persist($subscriber);
+        $this->em->flush();
+
+        return new Response('Ok', 201);
     }
 }

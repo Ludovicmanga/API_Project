@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Entity\Products;
 use App\Repository\ProductsRepository; 
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 Class ProductsService implements ProductsServiceInterface
 {
@@ -27,6 +28,7 @@ Class ProductsService implements ProductsServiceInterface
     public function createProduct($request)
     {
         $data = json_decode($request->getContent());
+        dd($data);
         $product = New Products;
         $product->setName($data->name);
         $this->em->persist($product);
