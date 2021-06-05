@@ -2,19 +2,127 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Products;
+use App\Services\ProductsServiceInterface;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ *@Route("/api", 
+ *    name="api_")
+*/
 class ApiController extends AbstractController
 {
-    /**
-    * @Route("/api/test", name="testapi")
-    */
-    public function test()
+    private $productsService;
+    private $subscribersService;
+
+    public function __construct(
+        ProductsServiceInterface $productsService, 
+        SubscribersServiceInterface $subscribersService
+    )
     {
-        return $this->json([
-                'message' => 'test!',
-        ]);
+        $this->productsService = $productsService;
+        $this->subscribersService = $subscribersService;
     }
+
+    /**
+     *@Route("/product/list",
+     *    name="product_list",
+     *    methods={"GET"})
+     */
+    public function getProductList()
+    {
+        $products = $this->productsService->findAll();
+
+        $encoders = [new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+        $jsonContent = $serializer->serialize($products, 'json', [
+            'circular_reference_handler' => function($object){
+                return $object->getId();
+            }
+        ]);
+        
+        $response = New Response($jsonContent);
+
+        $response->headers->set('Content-type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * Allows to get a particular product
+     * 
+     *@Route("/product/{id}", 
+     *    name="product", 
+     *    methods={"GET"})
+     */
+    public function getProduct(Products $product)
+    {
+        $encoders = [new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+        $jsonContent = $serializer->serialize($product, 'json', [
+            'circular_reference_handler' => function($object){
+                return $object->getId();
+            }
+        ]);
+        
+        $response = New Response($jsonContent);
+
+        $response->headers->set('Content-type', 'application/json');
+
+        return $response;
+    }
+    
+    /**
+     *@Route("/subscriber/get/user/{user_id}", 
+     *    name="subscribers_users_get",
+     *    methods={"GET"})
+     */
+    public function getUserSubscribers(Request $request)
+    {
+        $userId = $request->get('user_id');
+        $subscribers = $this->subscribersService->findByUser($userId);
+
+        return $this->subscribersService->serialize($subscribers); 
+    }
+
+    /**
+     *@Route("/subscriber/get/{id}", 
+     *    name=subscriber_"get",
+     *    methods={"GET"})
+     */
+    public function getSubscriber(Subscribers $subscriber)
+    {
+        return $this->subscribersService->serialize($subscriber); 
+    }
+
+    /**
+     *@Route("/subscriber/remove/{id}", 
+     *    name="subscriber_remove",
+     *    methods={"DELETE"})
+     */
+    public function removeSubscriber(Subscribers $subscriber)
+    {
+        $this->subscribersService->remove($subscriber);
+    }
+
+    /**
+     *@Route("/subscriber/create", 
+     *    name="subscriber_create",
+     *    methods={"POST"})
+     */
+    public function addSubscriber(Request $request)
+    {
+        //if($request->isXmlHttpRequest()){
+            return $this->subscribersService->createSubscriber($request); 
+        //}
+        //return new Response('Erreur', 404);
+    }
+
 }

@@ -27,19 +27,6 @@ class ProductController extends AbstractController
     }
 
     /**
-     *@Route("/create", 
-     *    name="product_create",
-     *    methods={"POST"})
-     */
-    public function add(Request $request)
-    {
-        //if($request->isXmlHttpRequest()){
-            return $this->productsService->createProduct($request);
-        //}
-        //return new Response('Erreur', 404);
-    }
-
-    /**
      *@Route("/list", 
      *    name="product_list", 
      *    methods={"GET"})

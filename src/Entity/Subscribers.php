@@ -4,9 +4,12 @@ namespace App\Entity;
 
 use App\Repository\SubscribersRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\ORM\Mapping\Entity;
 
 /**
  * @ORM\Entity(repositoryClass=SubscribersRepository::class)
+ * @UniqueEntity(fields={"email"}, message="This email is already taken")
  */
 class Subscribers
 {
