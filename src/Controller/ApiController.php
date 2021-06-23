@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Products;
+use App\Entity\Subscribers;
 use App\Services\ProductsServiceInterface;
 use Symfony\Component\Serializer\Serializer;
+use App\Services\SubscribersServiceInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -37,7 +40,6 @@ class ApiController extends AbstractController
     public function getProductList()
     {
         $products = $this->productsService->findAll();
-
         $encoders = [new JsonEncoder()];
         $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, $encoders);
@@ -48,7 +50,6 @@ class ApiController extends AbstractController
         ]);
         
         $response = New Response($jsonContent);
-
         $response->headers->set('Content-type', 'application/json');
 
         return $response;
@@ -74,6 +75,21 @@ class ApiController extends AbstractController
         
         $response = New Response($jsonContent);
 
+        $response->setCache([
+            'must_revalidate'  => false,
+            'no_cache'         => false,
+            'no_store'         => false,
+            'no_transform'     => false,
+            'public'           => true,
+            'private'          => false,
+            'proxy_revalidate' => false,
+            'max_age'          => 600,
+            's_maxage'         => 600,
+            'immutable'        => true,
+            'last_modified'    => new \DateTime(),
+            'etag'             => 'product',
+        ]);
+        
         $response->headers->set('Content-type', 'application/json');
 
         return $response;
@@ -94,7 +110,7 @@ class ApiController extends AbstractController
 
     /**
      *@Route("/subscriber/get/{id}", 
-     *    name=subscriber_"get",
+     *    name="subscriber_get",
      *    methods={"GET"})
      */
     public function getSubscriber(Subscribers $subscriber)
@@ -109,7 +125,7 @@ class ApiController extends AbstractController
      */
     public function removeSubscriber(Subscribers $subscriber)
     {
-        $this->subscribersService->remove($subscriber);
+        return $this->subscribersService->remove($subscriber);
     }
 
     /**
@@ -124,5 +140,4 @@ class ApiController extends AbstractController
         //}
         //return new Response('Erreur', 404);
     }
-
 }
