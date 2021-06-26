@@ -10,6 +10,7 @@ use App\Services\SubscribersServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,19 +41,8 @@ class ApiController extends AbstractController
     public function getProductList()
     {
         $products = $this->productsService->findAll();
-        $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent = $serializer->serialize($products, 'json', [
-            'circular_reference_handler' => function($object){
-                return $object->getId();
-            }
-        ]);
         
-        $response = New Response($jsonContent);
-        $response->headers->set('Content-type', 'application/json');
-
-        return $response;
+        return New JsonResponse($this->productsService->serialize($products));
     }
 
     /**
@@ -64,35 +54,7 @@ class ApiController extends AbstractController
      */
     public function getProduct(Products $product)
     {
-        $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent = $serializer->serialize($product, 'json', [
-            'circular_reference_handler' => function($object){
-                return $object->getId();
-            }
-        ]);
-        
-        $response = New Response($jsonContent);
-
-        $response->setCache([
-            'must_revalidate'  => false,
-            'no_cache'         => false,
-            'no_store'         => false,
-            'no_transform'     => false,
-            'public'           => true,
-            'private'          => false,
-            'proxy_revalidate' => false,
-            'max_age'          => 600,
-            's_maxage'         => 600,
-            'immutable'        => true,
-            'last_modified'    => new \DateTime(),
-            'etag'             => 'product',
-        ]);
-        
-        $response->headers->set('Content-type', 'application/json');
-
-        return $response;
+        return New JsonResponse($this->productsService->serialize($product));
     }
     
     /**
@@ -115,7 +77,7 @@ class ApiController extends AbstractController
      */
     public function getSubscriber(Subscribers $subscriber)
     {
-        return $this->subscribersService->serialize($subscriber); 
+        return new JsonResponse($this->subscribersService->serialize($subscriber)); 
     }
 
     /**

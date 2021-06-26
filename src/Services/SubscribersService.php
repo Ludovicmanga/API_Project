@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Entity\Products;
 use App\Entity\Subscribers;
+use App\Services\SerializerServiceInterface;
 use App\Repository\UserRepository;
 use App\Services\UserServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,13 +20,15 @@ Class SubscribersService implements SubscribersServiceInterface
         SubscribersRepository $repository,
         UserRepository $userRepository,
         EntityManagerInterface $em,
-        UserServiceInterface $userService
+        UserServiceInterface $userService,
+        SerializerServiceInterface $serializerService
     )
     {
         $this->repository = $repository;
         $this->userRepository = $userRepository;
         $this->em = $em;
-        $this->userService = $userService; 
+        $this->userService = $userService;
+        $this->serializerService = $serializerService;
     }
 
     public function remove($subscriber)
@@ -43,18 +46,7 @@ Class SubscribersService implements SubscribersServiceInterface
 
     public function serialize($subscribers)
     {
-        $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent = $serializer->serialize($subscribers, 'json', [
-            'circular_reference_handler' => function($object){
-                return $object->getId();
-            }
-        ]);
-        
-        $response = New Response($jsonContent);
-        $response->headers->set('Content-type', 'application/json');
-        return $response;
+        return $this->serializerService->serialize($subscribers);
     }
 
     public function createSubscriber($request)

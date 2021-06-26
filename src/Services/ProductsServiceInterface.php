@@ -7,4 +7,6 @@ Interface ProductsServiceInterface
     public function findAll();
 
     public function createProduct($request);
+
+    public function serialize($products);
 }

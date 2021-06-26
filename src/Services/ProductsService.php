@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Entity\Products;
 use App\Repository\ProductsRepository; 
 use Doctrine\ORM\EntityManagerInterface;
+use App\Services\SerializerServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 Class ProductsService implements ProductsServiceInterface
@@ -13,11 +14,13 @@ Class ProductsService implements ProductsServiceInterface
     
     public function __construct(
         ProductsRepository $repository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        SerializerServiceInterface $serializerService
     )
     {
         $this->repository = $repository;
         $this->em = $em;
+        $this->serializerService = $serializerService;
     }
 
     public function findAll()
@@ -35,5 +38,10 @@ Class ProductsService implements ProductsServiceInterface
         $this->em->flush();
 
         return new Response('Ok', 201);
+    }
+
+    public function serialize($products)
+    {
+        return $this->serializerService->serialize($products);
     }
 }
