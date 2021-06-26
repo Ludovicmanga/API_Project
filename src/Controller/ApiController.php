@@ -3,10 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Products;
+use App\Entity\Subscribers;
 use App\Services\ProductsServiceInterface;
 use Symfony\Component\Serializer\Serializer;
+use App\Services\SubscribersServiceInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,21 +41,8 @@ class ApiController extends AbstractController
     public function getProductList()
     {
         $products = $this->productsService->findAll();
-
-        $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent = $serializer->serialize($products, 'json', [
-            'circular_reference_handler' => function($object){
-                return $object->getId();
-            }
-        ]);
         
-        $response = New Response($jsonContent);
-
-        $response->headers->set('Content-type', 'application/json');
-
-        return $response;
+        return New JsonResponse($this->productsService->serialize($products));
     }
 
     /**
@@ -63,20 +54,7 @@ class ApiController extends AbstractController
      */
     public function getProduct(Products $product)
     {
-        $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent = $serializer->serialize($product, 'json', [
-            'circular_reference_handler' => function($object){
-                return $object->getId();
-            }
-        ]);
-        
-        $response = New Response($jsonContent);
-
-        $response->headers->set('Content-type', 'application/json');
-
-        return $response;
+        return New JsonResponse($this->productsService->serialize($product));
     }
     
     /**
@@ -94,12 +72,12 @@ class ApiController extends AbstractController
 
     /**
      *@Route("/subscriber/get/{id}", 
-     *    name=subscriber_"get",
+     *    name="subscriber_get",
      *    methods={"GET"})
      */
     public function getSubscriber(Subscribers $subscriber)
     {
-        return $this->subscribersService->serialize($subscriber); 
+        return new JsonResponse($this->subscribersService->serialize($subscriber)); 
     }
 
     /**
@@ -109,7 +87,7 @@ class ApiController extends AbstractController
      */
     public function removeSubscriber(Subscribers $subscriber)
     {
-        $this->subscribersService->remove($subscriber);
+        return $this->subscribersService->remove($subscriber);
     }
 
     /**
@@ -124,5 +102,4 @@ class ApiController extends AbstractController
         //}
         //return new Response('Erreur', 404);
     }
-
 }
