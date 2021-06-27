@@ -35,13 +35,11 @@ Class SubscribersService implements SubscribersServiceInterface
     {
         $this->em->remove($subscriber);
         $this->em->flush();
-        
-        return new Response('ok');
     }
 
-    public function findByUser($userId)
+    public function findByUser($user)
     {
-       return $this->repository->findByUser($userId); 
+       return $this->repository->findByUser($user); 
     }
 
     public function serialize($subscribers)
@@ -64,7 +62,5 @@ Class SubscribersService implements SubscribersServiceInterface
 
         $this->em->persist($subscriber);
         $this->em->flush();
-
-        return new Response('Ok', 201);
     }
 }

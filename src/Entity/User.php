@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use OpenApi\Annotations as OA;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -27,6 +28,14 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="json")
+     * @OA\Property(
+     *      type="array",
+     *      @OA\Items(
+     *          type="array",
+     *          @OA\Items()
+     *      ),
+     *      description="User roles"
+     * )
      */
     private $roles = [];
 

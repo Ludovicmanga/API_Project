@@ -6,6 +6,7 @@ use App\Repository\SubscribersRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping\Entity;
+use OpenApi\Annotations as OA;
 
 /**
  * @ORM\Entity(repositoryClass=SubscribersRepository::class)
@@ -17,6 +18,7 @@ class Subscribers
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @OA\Property(description="The unique identifier of the Subscriber.")
      */
     private $id;
 
