@@ -51,16 +51,23 @@ Class SubscribersService implements SubscribersServiceInterface
     {
         $data = json_decode($request->getContent());
         $subscriber = New Subscribers;
-        $subscriber->setName($data->name);
-        $subscriber->setLastName($data->lastName);
-        $subscriber->setEmail($data->email);
+        $subscriber
+            ->setName($data->name)
+            ->setLastName($data->lastName)
+            ->setEmail($data->email)
+        ;
 
         $userId = $data->userId;
         $userIdInt = intval($userId);
+
+        // créer un formtype pour valider les données, en mettant des contraintes.
+
         $user = $this->userRepository->find($userIdInt);
         $subscriber->setUser($user);
 
         $this->em->persist($subscriber);
         $this->em->flush();
+
+        return $this->serializerService->serialize($subscriber);
     }
 }
