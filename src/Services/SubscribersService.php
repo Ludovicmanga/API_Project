@@ -4,11 +4,12 @@ namespace App\Services;
 
 use App\Entity\Products;
 use App\Entity\Subscribers;
-use App\Services\SerializerServiceInterface;
 use App\Repository\UserRepository;
+use App\Services\MainServiceInterface;
 use App\Services\UserServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\SubscribersRepository; 
+use App\Repository\SubscribersRepository;
+use App\Services\SerializerServiceInterface;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -21,7 +22,8 @@ Class SubscribersService implements SubscribersServiceInterface
         UserRepository $userRepository,
         EntityManagerInterface $em,
         UserServiceInterface $userService,
-        SerializerServiceInterface $serializerService
+        SerializerServiceInterface $serializerService,
+        MainServiceInterface $mainService
     )
     {
         $this->repository = $repository;
@@ -29,6 +31,7 @@ Class SubscribersService implements SubscribersServiceInterface
         $this->em = $em;
         $this->userService = $userService;
         $this->serializerService = $serializerService;
+        $this->mainService = $mainService;
     }
 
     public function remove($subscriber)
@@ -39,7 +42,7 @@ Class SubscribersService implements SubscribersServiceInterface
 
     public function findByUser($user)
     {
-       return $this->repository->findByUser($user); 
+       return $this->repository->findByUser($user);
     }
 
     public function serialize($subscribers)
@@ -49,9 +52,11 @@ Class SubscribersService implements SubscribersServiceInterface
 
     public function createSubscriber($request)
     {
-        $data = json_decode($request->getContent());
-        $subscriber = New Subscribers;
-        $subscriber
+        //$data = json_decode($request->getContent());
+        $formName = 'subscriber-create';
+        $subscriber = new Subscribers;
+        $dataArray = $this->mainService->submit($subscriber, $formName, $request);
+        /* $subscriber
             ->setName($data->name)
             ->setLastName($data->lastName)
             ->setEmail($data->email)
@@ -63,11 +68,23 @@ Class SubscribersService implements SubscribersServiceInterface
         // créer un formtype pour valider les données, en mettant des contraintes.
 
         $user = $this->userRepository->find($userIdInt);
+        $subscriber->setUser($user); */
+
+        $subscriber
+            ->setName($dataArray['name'])
+            ->setLastName($dataArray['lastName'])
+            ->setEmail($dataArray['email'])
+        ;
+
+        $userId = $dataArray['user'];
+        $userIdInt = intval($userId);
+
+        $user = $this->userRepository->find($userIdInt);
         $subscriber->setUser($user);
 
         $this->em->persist($subscriber);
         $this->em->flush();
-
+        
         return $this->serializerService->serialize($subscriber);
     }
 }
