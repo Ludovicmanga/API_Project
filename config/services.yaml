@@ -35,3 +35,5 @@ services:
     App\Services\SubscribersServiceInterface: '@App\Services\SubscribersService'
     App\Services\UserServiceInterface: '@App\Services\UserService'
     App\Services\SerializerServiceInterface: '@App\Services\SerializerService'
+    App\Services\MainServiceInterface: '@App\Services\MainService'
+    App\Services\AppFormFactoryInterface: '@App\Form\AppFormFactory'
