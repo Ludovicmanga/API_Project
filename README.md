@@ -11,20 +11,20 @@ It was the first time I could interact with an API, which makes it a key project
 1.  Clone the project
 >https://github.com/Ludovicmanga/API_Project.git
 
-2. Install the dependencies
+2.  Install the dependencies
 >composer install
 
 3.  Create the database
-> php bin/console doctrine:database:create
+>php bin/console doctrine:database:create
 
 4.  Generate the migrations files 
-> php bin/console make:migration
+>php bin/console make:migration
 
 5.  Execute the migrations files
-> php bin/console doctrine:migrations:migrate
+>php bin/console doctrine:migrations:migrate
 
 6.  Execute the fixtures
-> php bin/console doctrine:fixtures:load
+>php bin/console doctrine:fixtures:load
 
 :eyes: To test the API, you will need a tool like Postman (https://www.postman.com), that will allow you to create HTTP requests.
 
