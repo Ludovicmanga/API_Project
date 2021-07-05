@@ -1,5 +1,7 @@
 # Bilemo API Project
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fbde11d1f28c45f5b4e6b2c6529c3dbb)](https://app.codacy.com/gh/Ludovicmanga/API_Project?utm_source=github.com&utm_medium=referral&utm_content=Ludovicmanga/API_Project&utm_campaign=Badge_Grade_Settings)
+
 **Version 1.0.0** 
 
 :computer: This project was created in the context of OpenClassRooms Symfony path. </br>
