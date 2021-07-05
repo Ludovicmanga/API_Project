@@ -92,7 +92,9 @@ class SubscriberController extends AbstractController
      */
     public function getSubscriber(Subscribers $subscriber)
     {
-        return new JsonResponse($this->subscribersService->serialize($subscriber)); 
+        $response = new JsonResponse($this->subscribersService->serialize($subscriber));
+        $response->setSharedMaxAge(1800);
+        return $response;
     }
 
     /**
