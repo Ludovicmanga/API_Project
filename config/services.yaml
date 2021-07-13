@@ -7,6 +7,7 @@ parameters:
     jwt_secret: test
 
 services:
+
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
@@ -32,8 +33,17 @@ services:
     # please note that last definitions always *replace* previous ones
 
     App\Services\ProductsServiceInterface: '@App\Services\ProductsService'
-    App\Services\SubscribersServiceInterface: '@App\Services\SubscribersService'
+    App\Services\SubscriberServiceInterface: '@App\Services\SubscriberService'
     App\Services\UserServiceInterface: '@App\Services\UserService'
     App\Services\SerializerServiceInterface: '@App\Services\SerializerService'
     App\Services\MainServiceInterface: '@App\Services\MainService'
     App\Services\AppFormFactoryInterface: '@App\Form\AppFormFactory'
+
+    api_exception_subscriber:
+        class: App\EventListener\ApiExceptionSubscriber
+        arguments: []
+        tags:
+            - { name: kernel.event_subscriber }
+
+
+
