@@ -52,35 +52,9 @@ Class SubscribersService implements SubscribersServiceInterface
 
     public function createSubscriber($request)
     {
-        //$data = json_decode($request->getContent());
         $formName = 'subscriber-create';
         $subscriber = new Subscribers;
-        $dataArray = $this->mainService->submit($subscriber, $formName, $request);
-        /* $subscriber
-            ->setName($data->name)
-            ->setLastName($data->lastName)
-            ->setEmail($data->email)
-        ;
-
-        $userId = $data->userId;
-        $userIdInt = intval($userId);
-
-        // créer un formtype pour valider les données, en mettant des contraintes.
-
-        $user = $this->userRepository->find($userIdInt);
-        $subscriber->setUser($user); */
-
-        $subscriber
-            ->setName($dataArray['name'])
-            ->setLastName($dataArray['lastName'])
-            ->setEmail($dataArray['email'])
-        ;
-
-        $userId = $dataArray['user'];
-        $userIdInt = intval($userId);
-
-        $user = $this->userRepository->find($userIdInt);
-        $subscriber->setUser($user);
+        $this->mainService->submit($subscriber, $formName, $request);
 
         $this->em->persist($subscriber);
         $this->em->flush();

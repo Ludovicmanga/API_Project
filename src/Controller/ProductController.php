@@ -3,18 +3,22 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Api\ApiProblem;
 use App\Entity\Products;
+use OpenApi\Annotations as OA;
+use App\Api\ApiProblemException;
+use Symfony\Component\Form\FormInterface;
 use App\Services\ProductsServiceInterface;
+use Nelmio\ApiDocBundle\Annotation\Security;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;use Nelmio\ApiDocBundle\Annotation\Model;
-use Nelmio\ApiDocBundle\Annotation\Security;
-use OpenApi\Annotations as OA;
 
 class ProductController extends AbstractController
 {
@@ -52,10 +56,11 @@ class ProductController extends AbstractController
     {
         $products = $this->productsService->findAll();
 
-       //return $this->cache->get('product_list', function(ItemInterface $item, $products){
-       //     $item->expiresAfter(10);
-          return New JsonResponse($this->productsService->serialize($products)); 
-       // });
+        $response = New JsonResponse($this->productsService->serialize($products));
+
+        // We put the response in cache
+        $response->setSharedMaxAge(1800);
+        return $response;
     }
 
     /**
@@ -87,6 +92,25 @@ class ProductController extends AbstractController
      */
     public function getProduct(Products $product)
     {
-        return New JsonResponse($this->productsService->serialize($product));
+        $response = New JsonResponse($this->productsService->serialize($product));
+
+        // We put the response in cache
+        $response->setSharedMaxAge(1800);
+        return $response;
+    }
+
+    /**
+     * @Route("/api/apiProblemException", 
+     *    name="apiProblemException", 
+     *    methods={"GET"})
+     */
+    public function throwApiProblemValidationException()
+    {
+        $apiProblem = new ApiProblem(
+            403,
+            ApiProblem::FORBIDDEN
+        );
+
+        throw new ApiProblemException($apiProblem);
     }
 }

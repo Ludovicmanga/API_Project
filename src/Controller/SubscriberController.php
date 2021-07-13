@@ -31,7 +31,7 @@ class SubscriberController extends AbstractController
      * 
      * Allows to get the list of subscribers related to a user
      * 
-     * @Route("api/subscriber/get/user/{user}",
+     * @Route("api/subscriber/get/user/all",
      *    name="subscribers_users_get",
      *    methods={"GET"})
      * 
@@ -59,14 +59,18 @@ class SubscriberController extends AbstractController
     {
         $subscribers = $this->subscribersService->findByUser($user);
 
-        return new JsonResponse($this->subscribersService->serialize($subscribers)); 
+        $response = new JsonResponse($this->subscribersService->serialize($subscribers));
+
+        // We put the response in cache
+        $response->setSharedMaxAge(1800);
+        return $response;
     }
 
     /**
      * 
      * Allows to get a particular subscriber's information
      * 
-     * @Route("api/subscriber/get/{id}", 
+     * @Route("/api/subscriber/get/{id}", 
      *    name="subscriber_get",
      *    methods={"GET"})
      * 
@@ -93,6 +97,8 @@ class SubscriberController extends AbstractController
     public function getSubscriber(Subscribers $subscriber)
     {
         $response = new JsonResponse($this->subscribersService->serialize($subscriber));
+
+        // We put the response in cache
         $response->setSharedMaxAge(1800);
         return $response;
     }
@@ -106,7 +112,7 @@ class SubscriberController extends AbstractController
      *    methods={"DELETE"})
      * 
      * @OA\Response(
-     *     response=200,
+     *     response=204,
      *     description="Returns the informations of the success or failure of the deletion",
      *     @OA\JsonContent(
      *        type="array",
@@ -129,7 +135,11 @@ class SubscriberController extends AbstractController
     {
         $this->subscribersService->remove($subscriber);
                 
-        return new JsonResponse('', 204);
+        $response = new JsonResponse('', 204);
+
+        // We put the response in cache
+        $response->setSharedMaxAge(1800);
+        return $response;
     }
 
     /**
@@ -141,7 +151,7 @@ class SubscriberController extends AbstractController
      *    methods={"POST"})
      * 
      * @OA\Response(
-     *     response=200,
+     *     response=201,
      *     description="Returns the informations of the success or failure of the creation",
      *     @OA\JsonContent(
      *        type="array",
@@ -183,6 +193,6 @@ class SubscriberController extends AbstractController
      */
     public function addSubscriber(Request $request)
     {   
-        return new JsonResponse($this->subscribersService->createSubscriber($request), 201);  
+        return new JsonResponse($this->subscribersService->createSubscriber($request), 201);
     }
 }
