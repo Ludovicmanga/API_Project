@@ -47,4 +47,11 @@ class SubscribersRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findByUserQueryBuilder($user)
+    {
+        return $this->createQueryBuilder('subscriber')
+            ->where('subscriber.user ='.$user->getId())
+        ;
+    }
 }

@@ -6,11 +6,13 @@ use App\Repository\UserRepository;
 
 Interface SubscribersServiceInterface
 {
-    public function findByUser($userId); 
+    public function findByUser($userId);
 
     public function remove($subscriber);
 
     public function serialize($subscribers);
 
-    public function createSubscriber($request);
+    public function createSubscriber($request, $user);
+
+    public function findByUserQueryBuilder($user);
 }

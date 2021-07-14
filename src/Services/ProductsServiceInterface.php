@@ -9,4 +9,6 @@ Interface ProductsServiceInterface
     public function createProduct($request);
 
     public function serialize($products);
+
+    public function findAllQb();
 }

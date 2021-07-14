@@ -31,7 +31,7 @@ Class ProductsService implements ProductsServiceInterface
     public function createProduct($request)
     {
         $data = json_decode($request->getContent());
-        dd($data);
+        
         $product = New Products;
         $product->setName($data->name);
         $this->em->persist($product);
@@ -43,5 +43,10 @@ Class ProductsService implements ProductsServiceInterface
     public function serialize($products)
     {
         return $this->serializerService->serialize($products);
+    }
+
+    public function findAllQb()
+    {
+        return $this->repository->findAllQb(); 
     }
 }
