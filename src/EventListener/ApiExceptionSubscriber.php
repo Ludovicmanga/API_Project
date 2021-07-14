@@ -15,21 +15,20 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
     public function onKernelException(ExceptionEvent $event)
     {
         $e = $event->getThrowable();
-
+        dd($e);
+        
         if ($e instanceof ApiProblemException) {
             $apiProblem = $e->getApiProblem();
         } else {
-            $statusCode = $e->getStatusCode();
-
-            if($statusCode == 403){
-                $type = FORBIDDEN;
+            // If we cannot get the code, we assume it is a 500 error
+            if(method_exists($e, 'getStatusCode')){
+                $statusCode = $e->getStatusCode();
             } else {
-                $type = null;
+                $statusCode = 500;
             }
-
+            
             $apiProblem = new ApiProblem(
-                $statusCode,
-                $type
+                $statusCode
             );
         }
         $response = new JsonResponse(

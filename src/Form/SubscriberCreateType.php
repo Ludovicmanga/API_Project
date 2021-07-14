@@ -17,9 +17,6 @@ class SubscriberCreateType extends AbstractType
             ->add('lastName')
             ->add('email')
             ->add('user')
-            ->add('_token', HiddenType::class, [
-                'mapped' => false,
-            ]);
         ;
     }
 
@@ -28,7 +25,7 @@ class SubscriberCreateType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Subscribers::class,
             // disable CSRF protection for this form
-            'csrf_protection' => false,
+            'csrf_protection' => false
         ]);
     }
 }

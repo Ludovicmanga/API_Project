@@ -17,6 +17,7 @@ class ApiProblem
     const TYPE_VALIDATION_ERROR = 'validation_error';
     const FORBIDDEN = 'forbidden';
     const TYPE_INVALID_REQUEST_BODY_FORMAT = 'invalid_body_format';
+    const NOT_ALLOWED_METHOD = 'not_allowed_method';
 
     private static $titles = array(
         self::TYPE_VALIDATION_ERROR => 'There was a validation error',
@@ -29,9 +30,24 @@ class ApiProblem
         $this->statusCode = $statusCode;
         
         if ($type === null) {
+
+            switch ($this->statusCode) {
+                 
+                case 403: 
+                    $type =self::FORBIDDEN; 
+                    break;
+                case 405: 
+                    $type =self::NOT_ALLOWED_METHOD; 
+                    break;
+                //default
+                default: 
+                $type = 'about:blank'; 
+                    break; 
+            }
+
             // no type? The default is about:blank and the title should
             // be the standard status code message
-            $type = 'about:blank';
+            
             $title = isset(Response::$statusTexts[$statusCode])
                 ? Response::$statusTexts[$statusCode]
                 : 'Unknown status code :(';

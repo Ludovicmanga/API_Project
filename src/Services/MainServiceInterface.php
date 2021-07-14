@@ -4,5 +4,5 @@ namespace App\Services;
 
 Interface MainServiceInterface
 {
-    public function submit($object, $formName, $data);
+    public function submit($object, $formName, $data, $user);
 }

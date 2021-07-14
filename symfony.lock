@@ -1,4 +1,7 @@
 {
+    "babdev/pagerfanta-bundle": {
+        "version": "v3.2.1"
+    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.2"
     },
@@ -157,6 +160,9 @@
     },
     "nikic/php-parser": {
         "version": "v4.10.5"
+    },
+    "pagerfanta/pagerfanta": {
+        "version": "v3.2.0"
     },
     "paragonie/random_compat": {
         "version": "v9.99.100"

@@ -3,8 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Api\ApiProblem;
+use Pagerfanta\Pagerfanta;
 use App\Entity\Subscribers;
 use OpenApi\Annotations as OA;
+use App\Api\ApiProblemException;
+use App\Pagination\PaginatedCollection;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use App\Services\SerializerServiceInterface;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Symfony\Component\Serializer\Serializer;
 use App\Services\SubscribersServiceInterface;
@@ -20,18 +26,24 @@ class SubscriberController extends AbstractController
 {
     private $subscribersService;
 
-    public function __construct(
-        SubscribersServiceInterface $subscribersService
-    )
+    public function __construct(SubscribersServiceInterface $subscribersService)
     {
         $this->subscribersService = $subscribersService;
+    }
+
+    protected function createApiResponse($data, $statusCode = 200)
+    {   
+        $json = $this->subscribersService->serialize($data);
+        return new Response($json, $statusCode, array(
+            'Content-Type' => 'application/json'
+        ));
     }
 
     /**
      * 
      * Allows to get the list of subscribers related to a user
      * 
-     * @Route("api/subscriber/get/user/all",
+     * @Route("/api/subscriber/get/user/all",
      *    name="subscribers_users_get",
      *    methods={"GET"})
      * 
@@ -55,11 +67,28 @@ class SubscriberController extends AbstractController
      * 
      * @Security(name="Bearer")
      */
-    public function getUserSubscribers(Request $request, User $user)
+    public function getUserSubscribers(Request $request)
     {
-        $subscribers = $this->subscribersService->findByUser($user);
+        $user = $this->getUser();
+        $page = $request->query->get('page', 1);
+        
+        $qb = $this->subscribersService->findByUserQueryBuilder($user);
+        
+        $adapter = new QueryAdapter($qb);
+        $pagerfanta = new Pagerfanta($adapter);
+        $pagerfanta->setMaxPerPage(10);
+        $pagerfanta->setCurrentPage($page);
 
-        $response = new JsonResponse($this->subscribersService->serialize($subscribers));
+        $subscribers = [];
+        foreach ($pagerfanta->getCurrentPageResults() as $result) {
+            $subscribers[] = $result;
+        }
+
+         $response = $this->createApiResponse([
+            'total' => $pagerfanta->getNbResults(),
+            'count' => count($subscribers),
+            'items' => $subscribers,
+        ], 200);
 
         // We put the response in cache
         $response->setSharedMaxAge(1800);
@@ -96,11 +125,22 @@ class SubscriberController extends AbstractController
      */
     public function getSubscriber(Subscribers $subscriber)
     {
-        $response = new JsonResponse($this->subscribersService->serialize($subscriber));
+        $user = $this->getUser();
 
-        // We put the response in cache
-        $response->setSharedMaxAge(1800);
-        return $response;
+        // We make sure the subscriber is related to the user, otherwise a 403 exception is thrown
+        if($subscriber->getUser() == $user)
+        {
+            $response = $this->createApiResponse($subscriber);
+
+            // We put the response in cache
+            $response->setSharedMaxAge(1800);
+
+            return $response;
+        } else {
+            $apiProblem = new ApiProblem(403);
+    
+            throw new ApiProblemException($apiProblem);
+        }
     }
 
     /**
@@ -133,13 +173,24 @@ class SubscriberController extends AbstractController
      */
     public function removeSubscriber(Subscribers $subscriber)
     {
-        $this->subscribersService->remove($subscriber);
-                
-        $response = new JsonResponse('', 204);
+        $user = $this->getUser();
 
-        // We put the response in cache
-        $response->setSharedMaxAge(1800);
-        return $response;
+        // We make sure the subscriber is related to the user, otherwise a 403 exception is thrown
+        if($subscriber->getUser() == $user)
+        {
+            $this->subscribersService->remove($subscriber);
+
+            $response = $this->createApiResponse('', 204);
+
+            // We put the response in cache
+            $response->setSharedMaxAge(1800);
+            return $response;
+
+        } else {
+            $apiProblem = new ApiProblem(403);
+    
+            throw new ApiProblemException($apiProblem);
+        }
     }
 
     /**
@@ -180,12 +231,6 @@ class SubscriberController extends AbstractController
      *     @OA\Schema(type="string")
      * )
      * 
-     * @OA\Parameter(
-     *     name="user Id",
-     *     in="query",
-     *     description="The id of the user related to this subscriber",
-     *     @OA\Schema(type="integer")
-     * )
      * 
      * @OA\Tag(name="Subscriber")
      *  
@@ -193,6 +238,11 @@ class SubscriberController extends AbstractController
      */
     public function addSubscriber(Request $request)
     {   
-        return new JsonResponse($this->subscribersService->createSubscriber($request), 201);
+        // We get the user Id to make sure he/she only can add related to him / her
+        $user = $this->getUser();
+
+        $subscriber = $this->subscribersService->createSubscriber($request, $user);
+
+        return $this->createApiResponse($subscriber, 201);
     }
 }

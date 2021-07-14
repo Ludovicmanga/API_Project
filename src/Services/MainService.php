@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Api\ApiProblem;
 use App\Entity\Subscribers;
+use App\Api\ApiProblemException;
 use App\Form\AppFormFactoryInterface;
 use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -16,9 +18,10 @@ class MainService implements MainServiceInterface
         $this->formFactory = $formFactory;
     }
     
-    public function submit($object, $formName, $data)
+    public function submit($object, $formName, $data, $user)
     {
         $dataArray = json_decode($data->getContent(), true);
+        $dataArray['user'] = $user->getId();
 
         // Bad array
         if (null !== $data && !is_array($dataArray)){

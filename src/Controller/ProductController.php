@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Api\ApiProblem;
 use App\Entity\Products;
+use Pagerfanta\Pagerfanta;
 use OpenApi\Annotations as OA;
 use App\Api\ApiProblemException;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Symfony\Component\Form\FormInterface;
 use App\Services\ProductsServiceInterface;
 use Nelmio\ApiDocBundle\Annotation\Security;
@@ -31,6 +33,14 @@ class ProductController extends AbstractController
         $this->productsService = $productsService;
     }
 
+    protected function createApiResponse($data, $statusCode = 200)
+    {   
+        $json = $this->productsService->serialize($data);
+        return new Response($json, $statusCode, array(
+            'Content-Type' => 'application/json'
+        ));
+    }
+
     /**
      * 
      * Allows to get the list of all the products
@@ -52,11 +62,29 @@ class ProductController extends AbstractController
      * 
      * @Security(name="Bearer")
      */
-    public function getProductList()
+    public function getProductList(Request $request)
     {
-        $products = $this->productsService->findAll();
+        $page = $request->query->get('page', 1);
+        
+        $qb = $this->productsService->findAllQb();
 
-        $response = New JsonResponse($this->productsService->serialize($products));
+        $adapter = new QueryAdapter($qb);
+        $pagerfanta = new Pagerfanta($adapter);
+        $pagerfanta->setMaxPerPage(10);
+        $pagerfanta->setCurrentPage($page);
+
+        $products = [];
+        foreach ($pagerfanta->getCurrentPageResults() as $result) {
+            $products[] = $result;
+        }
+
+         $response = $this->createApiResponse([
+            'total' => $pagerfanta->getNbResults(),
+            'count' => count($products),
+            'items' => $products,
+        ]);
+
+        //$response = New JsonResponse($this->productsService->serialize($products));
 
         // We put the response in cache
         $response->setSharedMaxAge(1800);
@@ -92,25 +120,10 @@ class ProductController extends AbstractController
      */
     public function getProduct(Products $product)
     {
-        $response = New JsonResponse($this->productsService->serialize($product));
+        $response = $this->createApiResponse($product);
 
         // We put the response in cache
         $response->setSharedMaxAge(1800);
         return $response;
-    }
-
-    /**
-     * @Route("/api/apiProblemException", 
-     *    name="apiProblemException", 
-     *    methods={"GET"})
-     */
-    public function throwApiProblemValidationException()
-    {
-        $apiProblem = new ApiProblem(
-            403,
-            ApiProblem::FORBIDDEN
-        );
-
-        throw new ApiProblemException($apiProblem);
     }
 }

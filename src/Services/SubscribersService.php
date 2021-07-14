@@ -50,15 +50,19 @@ Class SubscribersService implements SubscribersServiceInterface
         return $this->serializerService->serialize($subscribers);
     }
 
-    public function createSubscriber($request)
+    public function createSubscriber($request, $user)
     {
-        $formName = 'subscriber-create';
         $subscriber = new Subscribers;
-        $this->mainService->submit($subscriber, $formName, $request);
+        $this->mainService->submit($subscriber, 'subscriber-create', $request, $user);
 
         $this->em->persist($subscriber);
         $this->em->flush();
         
-        return $this->serializerService->serialize($subscriber);
+        return $subscriber;
+    }
+
+    public function findByUserQueryBuilder($user)
+    {
+        return $this->repository->findByUserQueryBuilder($user);
     }
 }

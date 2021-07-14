@@ -38,6 +38,7 @@ services:
     App\Services\SerializerServiceInterface: '@App\Services\SerializerService'
     App\Services\MainServiceInterface: '@App\Services\MainService'
     App\Services\AppFormFactoryInterface: '@App\Form\AppFormFactory'
+    
 
     api_exception_subscriber:
         class: App\EventListener\ApiExceptionSubscriber

@@ -47,4 +47,9 @@ class ProductsRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findAllQb()
+    {   
+        return $this->createQueryBuilder('product');
+    }
 }
