@@ -171,7 +171,7 @@ class SubscriberController extends AbstractController
      *
      * @Security(name="Bearer") 
      */
-    public function removeSubscriber(Subscribers $subscriber)
+    public function remove(Subscribers $subscriber)
     {
         $user = $this->getUser();
 
@@ -236,7 +236,7 @@ class SubscriberController extends AbstractController
      *  
      * @Security(name="Bearer")
      */
-    public function addSubscriber(Request $request)
+    public function add(Request $request)
     {   
         // We get the user Id to make sure he/she only can add related to him / her
         $user = $this->getUser();
@@ -244,5 +244,72 @@ class SubscriberController extends AbstractController
         $subscriber = $this->subscribersService->createSubscriber($request, $user);
 
         return $this->createApiResponse($subscriber, 201);
+    }
+    /**
+     * 
+     * Allows to edit a subscriber
+     * 
+     *@Route("api/subscriber/edit/{id}", 
+     *    name="subscriber_create",
+     *    methods={"PUT"})
+     * 
+     * @OA\Response(
+     *     response=201,
+     *     description="Returns the informations of the success or failure of the edition",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Subscribers::class))
+     *     )
+     * )
+     * 
+     * @OA\Parameter(
+     *     name="subscriber id",
+     *     in="query",
+     *     description="The id of the subscriber",
+     *     @OA\Schema(type="integer")
+     * )
+     * 
+     * 
+     * @OA\Parameter(
+     *     name="subscriber name",
+     *     in="query",
+     *     description="The name of the subscriber",
+     *     @OA\Schema(type="string")
+     * )
+     * 
+     * @OA\Parameter(
+     *     name="subscriber last name",
+     *     in="query",
+     *     description="The last name of the subscriber",
+     *     @OA\Schema(type="string")
+     * )
+     * 
+     * @OA\Parameter(
+     *     name="subscriber email",
+     *     in="query",
+     *     description="The email of the subscriber",
+     *     @OA\Schema(type="string")
+     * )
+     * 
+     * 
+     * @OA\Tag(name="Subscriber")
+     *  
+     * @Security(name="Bearer")
+     */
+    public function edit(?Subscribers $subscriber, Request $request)
+    {   
+        // We get the user Id to make sure he/she only can add related to him / her
+        $user = $this->getUser();
+
+        // We make sure the subscriber is related to the user, otherwise a 403 exception is thrown
+        if($subscriber->getUser() == $user) { 
+            $subscriber = $this->subscribersService->editSubscriber($request, $user, $subscriber);
+            
+            return $this->createApiResponse($subscriber, 201);
+        } else {
+            $apiProblem = new ApiProblem(403);
+    
+            throw new ApiProblemException($apiProblem);
+        }
     }
 }
