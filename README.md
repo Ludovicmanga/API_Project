@@ -1,6 +1,6 @@
 # Bilemo API Project
 
-:robot: Version 1.0.0
+**Version 1.0.0** 
 
 :computer: This project was created in the context of OpenClassRooms Symfony path. </br>
 :briefcase: It is the 7th project, and the first in which Symfony was used. 
