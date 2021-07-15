@@ -15,7 +15,6 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
     public function onKernelException(ExceptionEvent $event)
     {
         $e = $event->getThrowable();
-        dd($e);
         
         if ($e instanceof ApiProblemException) {
             $apiProblem = $e->getApiProblem();
