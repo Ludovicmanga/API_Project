@@ -28,9 +28,11 @@ It was the first time I could interact with an API, which makes it a key project
 6.  Execute the fixtures
 >php bin/console doctrine:fixtures:load
 
+:books: The API doc can be found using the route /api/doc
+
 :eyes: To test the API, you will need a tool like Postman (https://www.postman.com), that will allow you to create HTTP requests.
 
-:lock: The API is protected with JWT. 
+:lock: The API is protected with JWT.
 
 :key: To get the JWT token, you will need to send a request to /api/login_check, and put in the body the email and password of a registered user. A JWT token will be returned. It will allow to access the API, by putting the token in the HEADER, as the value of 'Authorization', along with 'Bearer'.
 Example: if the JWT token is 123456 The header must be 'authorization': 'Bearer 123456'
