@@ -25,7 +25,9 @@ class SubscriberCreateType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Subscribers::class,
             // disable CSRF protection for this form
-            'csrf_protection' => false
+            'csrf_protection' => false,
+            'allow_extra_fields' => true
+
         ]);
     }
 }

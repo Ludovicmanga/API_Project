@@ -14,5 +14,7 @@ Interface SubscribersServiceInterface
 
     public function createSubscriber($request, $user);
 
+    public function editSubscriber($request, $user, $subscriber);
+
     public function findByUserQueryBuilder($user);
 }

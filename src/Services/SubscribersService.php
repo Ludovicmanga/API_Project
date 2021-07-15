@@ -61,6 +61,20 @@ Class SubscribersService implements SubscribersServiceInterface
         return $subscriber;
     }
 
+    public function editSubscriber($request, $user, $subscriber)
+    {   
+        if($subscriber === null) {
+            $this->createSubscriber($request, $user);
+        } else {
+            $this->mainService->submit($subscriber, 'subscriber-create', $request, $user);
+
+            $this->em->persist($subscriber);
+            $this->em->flush();
+            
+            return $subscriber;
+        }
+    }
+
     public function findByUserQueryBuilder($user)
     {
         return $this->repository->findByUserQueryBuilder($user);
