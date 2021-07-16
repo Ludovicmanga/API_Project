@@ -15,9 +15,10 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
     public function onKernelException(ExceptionEvent $event)
     {
         $e = $event->getThrowable();
-
+        
         if ($e instanceof ApiProblemException) {
             $apiProblem = $e->getApiProblem();
+            
         } else {
             // If we cannot get the code, we assume it is a 500 error
             if(method_exists($e, 'getStatusCode')){

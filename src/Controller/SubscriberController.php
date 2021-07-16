@@ -137,7 +137,7 @@ class SubscriberController extends AbstractController
 
             return $response;
         } else {
-            $apiProblem = new ApiProblem(403);
+            $apiProblem = new ApiProblem(403, ApiProblem::FORBIDDEN_USER_GET);
     
             throw new ApiProblemException($apiProblem);
         }
@@ -187,7 +187,7 @@ class SubscriberController extends AbstractController
             return $response;
 
         } else {
-            $apiProblem = new ApiProblem(403);
+            $apiProblem = new ApiProblem(403, ApiProblem::FORBIDDEN_USER_REMOVE);
     
             throw new ApiProblemException($apiProblem);
         }
@@ -307,7 +307,7 @@ class SubscriberController extends AbstractController
             
             return $this->createApiResponse($subscriber, 201);
         } else {
-            $apiProblem = new ApiProblem(403);
+            $apiProblem = new ApiProblem(403, ApiProblem::FORBIDDEN_USER_EDIT);
     
             throw new ApiProblemException($apiProblem);
         }

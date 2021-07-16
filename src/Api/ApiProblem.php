@@ -15,11 +15,17 @@ class ApiProblem
     private $extraData = array();
 
     const TYPE_VALIDATION_ERROR = 'validation_error';
+    const FORBIDDEN_USER_EDIT = 'forbidden_user_edit';
+    const FORBIDDEN_USER_REMOVE = 'forbidden_user_remove';
+    CONST FORBIDDEN_USER_GET = 'forbidden_user_get';
     const FORBIDDEN = 'forbidden';
     const TYPE_INVALID_REQUEST_BODY_FORMAT = 'invalid_body_format';
     const NOT_ALLOWED_METHOD = 'not_allowed_method';
 
     private static $titles = array(
+        self::FORBIDDEN_USER_EDIT => 'You cannot edit this subscriber because it belongs to another user',
+        self::FORBIDDEN_USER_GET => 'You cannot get this subscriber because it belongs to another user',
+        self::FORBIDDEN_USER_REMOVE => 'You cannot remove this subscriber because it belongs to another user',
         self::TYPE_VALIDATION_ERROR => 'There was a validation error',
         self::FORBIDDEN => 'You cannot access to this ressource',
         self::TYPE_INVALID_REQUEST_BODY_FORMAT => 'Invalid JSON format sent',
