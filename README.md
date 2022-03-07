@@ -6,7 +6,7 @@
 
 :computer: This project was created in the context of OpenClassRooms Symfony path. </br>
 :briefcase: It is the 7th project, and the first in which Symfony was used. 
-It was the first time I could interact with an API, which makes it a key project, given how APIs are an important part of softwares worldwide. The link to the project instructions is in the root of the project, and is named "project_instructions.pdf"
+It was the first time I could interact with an API, which makes it a key project, given how APIs are an important part of softwares worldwide. The details of the project instructions is in the root of the project, and is named "project_instructions.pdf"
 
 ## Installation of the project
 
